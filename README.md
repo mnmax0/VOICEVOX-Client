@@ -174,6 +174,16 @@ python3.11 voicevox_client.py -r "Python||パイソン||1"
 python3.11 voicevox_client.py -r "Python||パイソン"
 ```
 
+## ファイルの説明
+<dl>
+  <dt>voicevox_client.py</dt> <dd>プログラム本体</dd>
+  <dt>startNEMOengine.sh </dt> <dd>VOICEVOX NEMO engine起動スクリプト</dd>
+  <dt>startVOICEVOXengine.sh </dt> <dd>VOICEVOX NEMO engine起動スクリプト</dd>
+  <dt>tourokuEx.sh</dt> <dd>辞書登録の例</dd>
+  <dt>youtubeyou.txt</dt> <dd>テスト用のテキストファイル</dd>
+  <dt></dt> <dd></dd>
+</dl>
+
 ## ライセンス
 [MIT](https://opensource.org/license/mit/ "MIT")
 
