@@ -178,10 +178,10 @@ python3.11 voicevox_client.py -r "Python||パイソン"
 [MIT](https://opensource.org/license/mit/ "MIT")
 
 ## 関連サイト
-（VOICEVOX engineは [VOICEVOX engine](https://github.com/VOICEVOX/voicevox_engine/tree/master) 
-https://opensource.org/license/mit/（VOICEVOX engine のドッカーイメージは [VOICEVOX engineのDocker images](https://hub.docker.com/r/voicevox/voicevox_engine) 
-（VOICEVOX NEMO engine は [VOICEVOX NEMO engine](https://github.com/VOICEVOX/voicevox_nemo_engine) 
-（VOICEVOX NEMO engine のドッカーイメージは [VOICEVOX engineのDocker images](https://hub.docker.com/r/voicevox/voicevox_nemo_engine) 
-（VOICEVOX 配布 サイト [VOICEVOX](https://voicevox.hiroshiba.jp/) 
-（VOICEVOX NEMO 配布 サイト [VOICEVOX NEMO](https://voicevox.hiroshiba.jp/nemo/) 
-（VOICEVOX WEB [VOICEVOX WEB](https://www.voicevox.su-shiki.com/) 
+*  [VOICEVOX engine](https://github.com/VOICEVOX/voicevox_engine/tree/master) 
+*  [VOICEVOX engineのDocker images](https://hub.docker.com/r/voicevox/voicevox_engine) 
+*  [VOICEVOX NEMO engine](https://github.com/VOICEVOX/voicevox_nemo_engine) 
+*  [VOICEVOX engineのDocker images](https://hub.docker.com/r/voicevox/voicevox_nemo_engine) 
+*  [VOICEVOX](https://voicevox.hiroshiba.jp/) 
+*  [VOICEVOX NEMO](https://voicevox.hiroshiba.jp/nemo/) 
+*  [VOICEVOX WEB](https://www.voicevox.su-shiki.com/) 
