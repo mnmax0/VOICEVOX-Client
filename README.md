@@ -18,14 +18,14 @@ Dockerイメージが公開されてるので、それを使わせてもらう�
 CPUバージョンなら以下で (GPUを希望の場合はそっちを）
 
 ```bash
-docker pull voicevox/voicevox_engine:cpu-ubuntu20.04-latest
+docker pull voicevox/voicevox_engine:cpu-latest
 docker run --rm -p '127.0.0.1:50021:50021' voicevox/voicevox_engine:cpu-latest
 ```
 
 #### VOICEVOX NEMO engineの起動
 
 ```bash
-docker pull voicevox/voicevox_engine:nvidia-ubuntu20.04-latest
+docker pull voicevox/voicevox_nemo_engine:cpu-ubuntu20.04-latest
 docker run --rm --gpus all -p '127.0.0.1:50121:50121' voicevox/voicevox_nemo_engine:cpu-ubuntu20.04-latest
 ```
 (VOICEVOX engineと開放してるポート番号が異なります。)
