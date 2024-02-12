@@ -220,7 +220,7 @@ if __name__ == "__main__":
                     c.writeb(ofilename,c.d)
                     #sys.stdout.buffer.write(c.d)
                 else:
-                    print(ofilename+" が存在していて上書きしません。終了します。上書きするなら-zオプションをつけて再度実行してください")
+                    print(ofilename+" が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
                     exit(1)
             if not args.disable_playwith:
                 #playWavBinary(c.d)

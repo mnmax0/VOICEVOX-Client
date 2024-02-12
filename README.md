@@ -177,7 +177,12 @@ python3.11 voicevox_client.py -r "Python||パイソン"
 ## ライセンス
 [MIT](https://opensource.org/license/mit/ "MIT")
 
+## 説明動画
+* https://youtu.be/c7LvNuyR3oM
+* https://youtu.be/0yDiLfworwI
+
 ## 関連サイト
+* 私のYoutubeチャンネル https://www.youtube.com/channel/UCNko_uhYtoTowASAuOam17w
 *  [VOICEVOX engine](https://github.com/VOICEVOX/voicevox_engine/tree/master) 
 *  [VOICEVOX engineのDocker images](https://hub.docker.com/r/voicevox/voicevox_engine) 
 *  [VOICEVOX NEMO engine](https://github.com/VOICEVOX/voicevox_nemo_engine) 
