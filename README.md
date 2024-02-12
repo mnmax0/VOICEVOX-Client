@@ -181,6 +181,7 @@ python3.11 voicevox_client.py -r "Python||パイソン"
   <dt>startVOICEVOXengine.sh </dt> <dd>VOICEVOX NEMO engine起動スクリプト</dd>
   <dt>tourokuEx.sh</dt> <dd>辞書登録の例</dd>
   <dt>youtubeyou.txt</dt> <dd>テスト用のテキストファイル</dd>
+  <dt>atokaraPlay.py</dt> <dd>生成したwav,txtファイルを表示しながら再生するプログラム</dd>
   <dt></dt> <dd></dd>
 </dl>
 

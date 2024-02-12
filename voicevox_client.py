@@ -198,7 +198,9 @@ if __name__ == "__main__":
     if args.input_filename is not None:
         with open(args.input_filename, 'r') as f:
             for line in f:
-                target.append(line)
+                line2=str.strip(line)
+                if len(line2)!=0:
+                    target.append(line2)
     if args.delelteWordRegistration!="":
         c=Voicevox_client(url2,args.speakerid)
         c.delelteWordRegistration(args.delelteWordRegistration)
@@ -214,13 +216,19 @@ if __name__ == "__main__":
         print(i,target[i])
         if ttext != "":
             c=mySynthesis(args.url,args.port,args.speakerid,ttext,setting)
-            ofilename="%s_%05d.wav" % (args.output_filename_base,i)
+            ofilenamebase="%s_%05d" % (args.output_filename_base,i)
             if args.enable_output_file: 
-                if args.overwritemode or (not os.path.isfile(ofilename)):
-                    c.writeb(ofilename,c.d)
+                if args.overwritemode or (not os.path.isfile(ofilenamebase+".wav")):
+                    c.writeb(ofilenamebase+".wav",c.d)
                     #sys.stdout.buffer.write(c.d)
                 else:
-                    print(ofilename+" が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
+                    print(ofilename+".wav が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
+                    exit(1)
+                if args.overwritemode or (not os.path.isfile(ofilenamebase+".txt")):
+                    with open(ofilenamebase+".txt","w") as f:
+                        f.write(target[i])
+                else:
+                    print(ofilename+".txt が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
                     exit(1)
             if not args.disable_playwith:
                 #playWavBinary(c.d)
