@@ -10,7 +10,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     files = os.listdir(args.target_directory)
     files.sort()
-    target = [x for x in files if re.match("^"+args.filename_base , x)]
+    target = [x for x in files if re.match("^"+args.filename_base+"_" , x)]
     wavs = [x for x in target if re.match(".*\.wav$" , x)]
     txts = [x for x in target if re.match(".*\.txt$" , x)]
     #print(target)

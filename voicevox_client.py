@@ -32,6 +32,15 @@ class Voicevox_client:
         d = json.loads(data.decode('utf-8'))
         return json.dumps(d, indent=indent, ensure_ascii=False)
         # audio_query用内部関数
+    def printSpeakers(self):
+        for i,d in enumerate(json.loads(self.speakers())):
+            print(d["name"],",",d["speaker_uuid"])
+            for j in d["styles"]:
+                if "type" in j.keys():
+                    print(j["id"],j["type"],j["name"])
+                else:
+                    print(j["id"],j["name"])
+            print("\n")
     def baudio_query(self, speaker, text):
         url = '{}?{}'.format( self.burl+'/audio_query', urllib.parse.urlencode({'speaker':speaker,'text':text}))
         request = urllib.request.Request(url, method="POST")
@@ -166,7 +175,7 @@ if __name__ == "__main__":
     parser.add_argument("-p","--port", default="50121", help="Voicevoxエンジンのポート")
     parser.add_argument("-s","--speakerid",  type=int, default=10006, help="スピーカーのID")
     parser.add_argument("-l","--listspeakers",  action="store_true", help="そのエンジンのバージョン、利用可能なspeakers(json形式),ユーザー辞書(json形式)の情報出力")
-    parser.add_argument("-o","--output_filename_base", default="OUT", help="出力ファイルの名前の先頭指定（無指定ならOUT)")
+    parser.add_argument("-o","--output_filename_base", default="", help="出力ファイルの名前の先頭指定（無指定でiオプション使ってなければOUT、iオプション使ってるなら入力ファイル名のbaseに_を追加した文字列)")
     parser.add_argument("-w","--enable_output_file", action="store_true", help="ファイル出力するモード")
     parser.add_argument("-x","--disable_playwith", action="store_true", help="音声出力しないモード")
     parser.add_argument("-f","--overwritemode", action="store_true", help="出力ファイルを上書きモード")
@@ -191,6 +200,8 @@ if __name__ == "__main__":
         print("エンジンのバージョン", c.version())
         print("******************* 利用可能なSpeakers")
         print(c.dumps(c.speakers(),5))
+        print("******************* 表")
+        c.printSpeakers()
         print("******************* ユーザー辞書")
         print(c.dumps(c.userdict(),5))
     if args.text is not None:
@@ -212,11 +223,15 @@ if __name__ == "__main__":
             c.wordRegistration(tmp_wr[0],tmp_wr[1],tmp_wr[2])
         else:
             c.wordRegistration(tmp_wr[0],tmp_wr[1])
+    output_filename_base="OUT"
+    if args.input_filename is not None:
+        if args.output_filename_base == "":
+            output_filename_base=os.path.splitext(os.path.basename(args.input_filename))[0]
     for i, ttext in enumerate(target):
         print(i,target[i])
         if ttext != "":
             c=mySynthesis(args.url,args.port,args.speakerid,ttext,setting)
-            ofilenamebase="%s_%05d" % (args.output_filename_base,i)
+            ofilenamebase="%s_%05d" % (output_filename_base,i)
             if args.enable_output_file: 
                 if args.overwritemode or (not os.path.isfile(ofilenamebase+".wav")):
                     c.writeb(ofilenamebase+".wav",c.d)
