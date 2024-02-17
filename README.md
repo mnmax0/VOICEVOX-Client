@@ -174,6 +174,28 @@ python3.11 voicevox_client.py -r "Python||パイソン||1"
 python3.11 voicevox_client.py -r "Python||パイソン"
 ```
 
+### 一括登録用スクリプト例 tourokuEx.sh
+
+```bash
+./tourokuEx.sh エンジンのポート 辞書データファイル 
+あるいは
+./tourokuEx.sh エンジンのポート 
+あるいは
+./tourokuEx.sh 
+```
+
+辞書データファイルは以下のようにvoicevox_client.pyのrオプションに渡す内容を入れたもの
+
+```text
+Python||パイソン||1
+Github||ギットハブ
+Docker||ドッカー
+NEMO||ネモ||0
+script言語||スクリプトゲンゴ||0
+```
+
+tourokuEx.shの引数を渡さない場合、ポートは50121、辞書ファイルは myjisyo.dat が対象になる。
+
 ## ファイルの説明
 <dl>
   <dt>voicevox_client.py</dt> <dd>プログラム本体</dd>
