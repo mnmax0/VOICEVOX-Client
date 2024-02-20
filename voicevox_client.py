@@ -4,21 +4,54 @@ import json
 import wave
 import pyaudio
 import io
+from pprint import pprint
 
 class Voicevox_client:
     def __init__(self, burl='http://127.0.0.1:50121', speaker=10006):
         # Voicevox engine URL 
         self.burl = burl            
         # speaker id
-        self.speaker = speaker
+        self.speaker = int(speaker)
         # audio_queryの保持用
         self.qd = json.loads(json.dumps({ 'speedScale': 1.0, 'pitchScale': 0.0, 'intonationScale': 1.0, 'volumeScale': 1.0, 'prePhonemeLength': 0.1, 'postPhonemeLength': 0.1, 'outputSamplingRate': 24000, 'outputStereo': False }))
         # 合成したwavデータ保存用
         self.d = None
+        # スピーカーの表用
+        self.dic1 = {}
+        self.dic2 = {}
+        # スピーカーの逆引き用
+        self.rdic1 = {}
+        self.rdic2 = {}
+        self.mkdic()
+        #print(type(self.speaker),self.speaker)
+        if self.speaker not in self.dic2.keys():
+            self.speaker=min(self.dic2.keys())
+            print(speaker,"はこのVOICEVOXエンジンでは使えないので",self.speaker,"を話者idとして設定しました")
+            #print(self.dic2.keys())
         # スピーカーの一覧を得る
     def speakers(self):
         with urllib.request.urlopen(self.burl+'/speakers') as response:
             return response.read()
+        # 名前で話者を変更,タイプは前のタイプを継承
+    def setSpeakerWithName(self,name):
+        if name in self.rdic1.keys():
+            ctype=self.dic2[self.speaker][1]
+            self.setSpeakerWithNameType(name,ctype)
+        else:
+            print(name,"はこのVOICEVOXエンジンでは使えません")
+            print("利用可能な一覧")
+            pprint(self.rdic1.keys())
+            sys.exit(1)
+        # 名前とタイプで話者を変更
+    def setSpeakerWithNameType(self,name,_type):
+        if (name,_type) in self.rdic2.keys():
+            self.speaker=self.rdic2[(name,_type)]
+        else:
+            print((name,_type),"はこのVOICEVOXエンジンでは使えません")
+            print("利用可能な一覧")
+            pprint(self.rdic2.keys())
+            sys.exit(1)
+        # ユーザー辞書の一覧を得る
         # ユーザー辞書の一覧を得る
     def userdict(self):
         with urllib.request.urlopen(self.burl+'/user_dict') as response:
@@ -32,7 +65,18 @@ class Voicevox_client:
         d = json.loads(data.decode('utf-8'))
         return json.dumps(d, indent=indent, ensure_ascii=False)
         # audio_query用内部関数
-    def printSpeakers(self):
+    def mkdic(self):
+        self.dic1={}
+        self.rdic1={}
+        self.dic2={}
+        self.rdic2={}
+        for i,d in enumerate(json.loads(self.speakers())):
+            self.dic1[d["speaker_uuid"]]=d["name"]
+            self.rdic1[d["name"]]=d["speaker_uuid"]
+            for j in d["styles"]:
+                self.dic2[j["id"]]=[d["name"],j["name"]]
+                self.rdic2[d["name"],j["name"]]=j["id"]
+    def printSpeakers_old(self):
         for i,d in enumerate(json.loads(self.speakers())):
             print(d["name"],",",d["speaker_uuid"])
             for j in d["styles"]:
@@ -41,6 +85,16 @@ class Voicevox_client:
                 else:
                     print(j["id"],j["name"])
             print("\n")
+    def printSpeakers(self):
+        print("******** 名前,uuid ******** ")
+        pprint(self.rdic1)
+        print("\n")
+        print("******** id,(名前、タイプ) ******** ")
+        pprint(self.dic2)
+        print("\n")
+        print("******** (名前、タイプ),id ******** ")
+        pprint(self.rdic2)
+        print("\n")
     def baudio_query(self, speaker, text):
         url = '{}?{}'.format( self.burl+'/audio_query', urllib.parse.urlencode({'speaker':speaker,'text':text}))
         request = urllib.request.Request(url, method="POST")
@@ -95,6 +149,29 @@ class Voicevox_client:
         with urllib.request.urlopen(request) as response:
             self.qd = response.read()
             return self.qd
+    def changeConf(self,newconf={ 'speedScale': 1.0, 'pitchScale': 0.0, 'intonationScale': 1.0, 'volumeScale': 1.0, 'prePhonemeLength': 0.1, 'postPhonemeLength': 0.1, 'outputSamplingRate': 24000, 'outputStereo': False} ):
+        for k in newconf.keys():
+            if k in self.aq.keys():
+                self.aq[k]=newconf[k]
+            elif k == "話速":
+                self.aq['speedScale']=newconf[k]
+            elif k == "音高":
+                self.aq['pitchScale']=newconf[k]
+            elif k == "抑揚":
+                self.aq['intonationScale']=newconf[k]
+            elif k == "音量":
+                self.aq['volumeScale']=newconf[k]
+            elif k == "開始無音":
+                self.aq['prePhonemeLength']=newconf[k]
+            elif k == "終了無音":
+                self.aq['postPhonemeLength']=newconf[k]
+            else:
+                print("ERR:",k,"という設定項目がありません")
+                sys.exit(1)
+    def isEnableSpeaker(self,name,_type="ノーマル"):
+        return [name,_type] in self.rdic2.keys()
+    def isEnableSpeakerName(self,name):
+        return name in self.rdic1.keys()
 
 
 # デバッグ用テスト関数
@@ -173,7 +250,7 @@ if __name__ == "__main__":
     parser.add_argument("-i","--input_filename", default=None, help="音声合成する文書ファイル指定")
     parser.add_argument("-u", "--url", default="http://127.0.0.1", help="VoicevoxエンジンのURL")
     parser.add_argument("-p","--port", default="50121", help="Voicevoxエンジンのポート")
-    parser.add_argument("-s","--speakerid",  type=int, default=10006, help="スピーカーのID")
+    parser.add_argument("-s","--speakerid",  default=10006, help="スピーカーのID or 話者の名前とタイプ。タイプを省略した場合ノーマルタイプのID ex. 10006,  女性6||ノーマル, 女性6")
     parser.add_argument("-l","--listspeakers",  action="store_true", help="そのエンジンのバージョン、利用可能なspeakers(json形式),ユーザー辞書(json形式)の情報出力")
     parser.add_argument("-o","--output_filename_base", default="", help="出力ファイルの名前の先頭指定（無指定でiオプション使ってなければOUT、iオプション使ってるなら入力ファイル名のbaseに_を追加した文字列)")
     parser.add_argument("-w","--enable_output_file", action="store_true", help="ファイル出力するモード")
@@ -196,7 +273,7 @@ if __name__ == "__main__":
     target=[]
     url2=args.url+":"+args.port
     if args.listspeakers:
-        c=Voicevox_client(url2,args.speakerid)
+        c=Voicevox_client(url2)
         print("エンジンのバージョン", c.version())
         print("******************* 利用可能なSpeakers")
         print(c.dumps(c.speakers(),5))
@@ -213,11 +290,11 @@ if __name__ == "__main__":
                 if len(line2)!=0:
                     target.append(line2)
     if args.delelteWordRegistration!="":
-        c=Voicevox_client(url2,args.speakerid)
+        c=Voicevox_client(url2)
         c.delelteWordRegistration(args.delelteWordRegistration)
     if len(args.wordRegistration)!=0:
         tmp_wr=re.split(r"\|\|",args.wordRegistration)
-        c=Voicevox_client(url2,args.speakerid)
+        c=Voicevox_client(url2)
         print(args.wordRegistration,len(args.wordRegistration))
         if( len(tmp_wr)>2 ):
             c.wordRegistration(tmp_wr[0],tmp_wr[1],tmp_wr[2])
@@ -227,10 +304,45 @@ if __name__ == "__main__":
     if args.input_filename is not None:
         if args.output_filename_base == "":
             output_filename_base=os.path.splitext(os.path.basename(args.input_filename))[0]
+    speakerid=args.speakerid
+    tmp=Voicevox_client(url2)
+    #print(tmp.rdic2.keys())
+    if re.match(r'[0-9]+',str(args.speakerid)):
+        tmp=Voicevox_client(url2,speakerid)
+        #print(">----------------------<")
+        #print(tmp.speaker,args.speakerid, tmp.speaker!=args.speakerid,"<")
+        if tmp.speaker!=int(args.speakerid):
+            print("ERR:",args.speakerid,"は使えません。利用可能なidは以下")
+            pprint(tmp.dic2.keys())
+            sys.exit(1)
+        else:
+            speakerid=int(args.speakerid)
+    elif re.match(r'.*\|\|.*',args.speakerid):
+        tmp1=re.sub(r'\|\|.*',"",args.speakerid)
+        tmp2=re.sub(r'.*\|\|',"",args.speakerid)
+        if (tmp1,tmp2) in tmp.rdic2.keys():
+            tmp.setSpeakerWithNameType(tmp1,tmp2)
+            speakerid=tmp.speaker
+        else:
+            print(args.speakerid,"は使えません。利用可能は以下")
+            pprint(tmp.rdic2.keys())
+            sys.exit(1)
+    elif (args.speakerid,"ノーマル") in tmp.rdic2.keys():
+            tmp.setSpeakerWithNameType(args.speakerid,"ノーマル")
+            speakerid=tmp.speaker
+    else:
+            print([args.speakerid,"ノーマル"],"は使えません。利用可能は以下")
+            pprint(tmp.rdic2.keys())
+            sys.exit(1)
+
+    if tmp.speaker != args.speakerid:
+        #print(tmp.speaker,speakerid)
+        speakerid=tmp.speaker
+        #print("***new speakerid ***",speakerid)
     for i, ttext in enumerate(target):
         print(i,target[i])
         if ttext != "":
-            c=mySynthesis(args.url,args.port,args.speakerid,ttext,setting)
+            c=mySynthesis(args.url,args.port,speakerid,ttext,setting)
             ofilenamebase="%s_%05d" % (output_filename_base,i)
             if args.enable_output_file: 
                 if args.overwritemode or (not os.path.isfile(ofilenamebase+".wav")):
@@ -238,13 +350,13 @@ if __name__ == "__main__":
                     #sys.stdout.buffer.write(c.d)
                 else:
                     print(ofilename+".wav が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
-                    exit(1)
+                    sys.exit(1)
                 if args.overwritemode or (not os.path.isfile(ofilenamebase+".txt")):
                     with open(ofilenamebase+".txt","w") as f:
                         f.write(target[i])
                 else:
                     print(ofilename+".txt が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
-                    exit(1)
+                    sys.exit(1)
             if not args.disable_playwith:
                 #playWavBinary(c.d)
                 c.play()
