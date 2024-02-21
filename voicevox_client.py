@@ -328,7 +328,7 @@ if __name__ == "__main__":
         tmp=Voicevox_client(url2,speakerid)
         #print(">----------------------<")
         #print(tmp.speaker,args.speakerid, tmp.speaker!=args.speakerid,"<")
-        if tmp.speaker!=int(args.speakerid):
+        if not tmp.isEnableSpeakerID(int(args.speakerid)):
             print("ERR:",args.speakerid,"は使えません。利用可能なidは以下")
             pprint(tmp.dic2.keys())
             sys.exit(1)

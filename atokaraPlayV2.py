@@ -24,7 +24,7 @@ if __name__ == "__main__":
     #print(target)
     #print(wavs)
     #print(txts)
-    pchapter=1
+    pchapter=0
     for i, t in enumerate(jsons):
         tt=args.target_directory+"/"+t
         with open(tt,"r") as f:
