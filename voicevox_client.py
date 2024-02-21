@@ -5,6 +5,7 @@ import wave
 import pyaudio
 import io
 from pprint import pprint
+import sys
 
 class Voicevox_client:
     def __init__(self, burl='http://127.0.0.1:50121', speaker=10006):
@@ -13,7 +14,9 @@ class Voicevox_client:
         # speaker id
         self.speaker = int(speaker)
         # audio_queryの保持用
-        self.qd = json.loads(json.dumps({ 'speedScale': 1.0, 'pitchScale': 0.0, 'intonationScale': 1.0, 'volumeScale': 1.0, 'prePhonemeLength': 0.1, 'postPhonemeLength': 0.1, 'outputSamplingRate': 24000, 'outputStereo': False }))
+        self.qd = json.loads(json.dumps({}))
+        # 設定ファイル
+        self.conf = json.loads(json.dumps({ 'speedScale': 1.0, 'pitchScale': 0.0, 'intonationScale': 1.0, 'volumeScale': 1.0, 'prePhonemeLength': 0.1, 'postPhonemeLength': 0.1, 'outputSamplingRate': 24000, 'outputStereo': False }))
         # 合成したwavデータ保存用
         self.d = None
         # スピーカーの表用
@@ -33,6 +36,12 @@ class Voicevox_client:
         with urllib.request.urlopen(self.burl+'/speakers') as response:
             return response.read()
         # 名前で話者を変更,タイプは前のタイプを継承
+    def isEnableSpeaker(self,name,_type="ノーマル"):
+        return (name,_type) in self.rdic2.keys()
+    def isEnableSpeakerName(self,name):
+        return name in self.rdic1.keys()
+    def isEnableSpeakerID(self,_id):
+        return int(_id) in self.dic2.keys()
     def setSpeakerWithName(self,name):
         if name in self.rdic1.keys():
             ctype=self.dic2[self.speaker][1]
@@ -53,6 +62,9 @@ class Voicevox_client:
             sys.exit(1)
         # ユーザー辞書の一覧を得る
         # ユーザー辞書の一覧を得る
+    def setSpeakerWithID(self,_id):
+        if self.isEnableSpeakerID(int(_id)):
+            self.speaker=int(_id)
     def userdict(self):
         with urllib.request.urlopen(self.burl+'/user_dict') as response:
             return response.read()
@@ -107,6 +119,7 @@ class Voicevox_client:
         # audio_queryの結果を変更用（話速、ピッチ等)
     def set(self, d={ 'speedScale': 1.0, 'pitchScale': 0.0, 'intonationScale': 1.0, 'volumeScale': 1.0, 'prePhonemeLength': 0.1, 'postPhonemeLength': 0.1, 'outputSamplingRate': 24000, 'outputStereo': False} ):
         #print(d)
+        #print("********** voicevox_client set:",self.qd,"***************")
         tmpqd=json.loads(self.qd)
         for k,v in d.items():
             #print(">")
@@ -150,28 +163,31 @@ class Voicevox_client:
             self.qd = response.read()
             return self.qd
     def changeConf(self,newconf={ 'speedScale': 1.0, 'pitchScale': 0.0, 'intonationScale': 1.0, 'volumeScale': 1.0, 'prePhonemeLength': 0.1, 'postPhonemeLength': 0.1, 'outputSamplingRate': 24000, 'outputStereo': False} ):
+        #print("********************* changeConf start")
+        #pprint(self.conf)
         for k in newconf.keys():
-            if k in self.aq.keys():
-                self.aq[k]=newconf[k]
-            elif k == "話速":
-                self.aq['speedScale']=newconf[k]
-            elif k == "音高":
-                self.aq['pitchScale']=newconf[k]
-            elif k == "抑揚":
-                self.aq['intonationScale']=newconf[k]
-            elif k == "音量":
-                self.aq['volumeScale']=newconf[k]
-            elif k == "開始無音":
-                self.aq['prePhonemeLength']=newconf[k]
-            elif k == "終了無音":
-                self.aq['postPhonemeLength']=newconf[k]
+            if k in self.conf.keys():
+                self.conf[k]=newconf[k]
+            elif k == "話速" or k == 'speedScale':
+                self.conf['speedScale']=newconf[k]
+            elif k == "音高" or k == 'pitchScale':
+                self.conf['pitchScale']=newconf[k]
+            elif k == "抑揚" or k == 'intonationScale':
+                self.conf['intonationScale']=newconf[k]
+            elif k == "音量" or k == 'volumeScale':
+                self.conf['volumeScale']=newconf[k]
+            elif k == "開始無音" or k == 'prePhonemeLength':
+                self.conf['prePhonemeLength']=newconf[k]
+            elif k == "終了無音" or k == 'postPhonemeLength':
+                self.conf['postPhonemeLength']=newconf[k]
             else:
-                print("ERR:",k,"という設定項目がありません")
-                sys.exit(1)
-    def isEnableSpeaker(self,name,_type="ノーマル"):
-        return [name,_type] in self.rdic2.keys()
-    def isEnableSpeakerName(self,name):
-        return name in self.rdic1.keys()
+                raise RuntimeError("Voicevox_client changeConf ERR: %sという設定項目無い" % k)
+        #pprint(self.conf)
+        #print("********************* changeConf end\n\n")
+    def printInfo(self):
+        print("*** voicevox_client Info")
+        print(self.burl,self.speaker,self.dic2[self.speaker])
+        pprint(self.qd)
 
 
 # デバッグ用テスト関数
@@ -245,7 +261,7 @@ if __name__ == "__main__":
     import os
     import re
     #parser = argparse.ArgumentParser(description='VOicevox client', epilog='--textも--input_filenameオプションもない場合、標準入力の文書を合成')
-    parser = argparse.ArgumentParser(description="VOicevox client: VOICEVOXエンジンを利用して音声合成するツール(先にVOICEVOXエンジンを動かす必要あり)", epilog="VOICEVOX engineなら\ndocker run --rm -p '127.0.0.1:50021:50021' voicevox/voicevox_engine:cpu-latest\nVOICEVOX NEMO engineなら\ndocker run --rm --gpus all -p '127.0.0.1:50121:50121' voicevox/voicevox_nemo_engine:cpu-ubuntu20.04-latest\n")
+    parser = argparse.ArgumentParser(description="VOicevox client: VOICEVOXエンジンを利用して音声合成するツール(先にVOICEVOXエンジンを動かす必要あり)", epilog="VOICEVOX engineなら\ndocker run --rm -p '127.0.0.1:50021:50021' voicevox/voicevox_engine:cpu-latest\nVOICEVOX NEMO engineなら\ndocker run --rm --gpus all -p '127.0.0.1:50121:50121' voicevox/voicevox_nemo_engine:cpu-latest\n")
     parser.add_argument("-t","--text", default=None, help="音声合成する文書")
     parser.add_argument("-i","--input_filename", default=None, help="音声合成する文書ファイル指定")
     parser.add_argument("-u", "--url", default="http://127.0.0.1", help="VoicevoxエンジンのURL")
@@ -303,7 +319,8 @@ if __name__ == "__main__":
     output_filename_base="OUT"
     if args.input_filename is not None:
         if args.output_filename_base == "":
-            output_filename_base=os.path.splitext(os.path.basename(args.input_filename))[0]
+            #output_filename_base=os.path.splitext(os.path.basename(args.input_filename))[0]
+            output_filename_base=os.path.join(os.path.dirname(args.input_filename),os.path.splitext(os.path.basename(args.input_filename))[0])
     speakerid=args.speakerid
     tmp=Voicevox_client(url2)
     #print(tmp.rdic2.keys())
@@ -349,7 +366,7 @@ if __name__ == "__main__":
                     c.writeb(ofilenamebase+".wav",c.d)
                     #sys.stdout.buffer.write(c.d)
                 else:
-                    print(ofilename+".wav が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
+                    print(ofilenamebase+".wav が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
                     sys.exit(1)
                 if args.overwritemode or (not os.path.isfile(ofilenamebase+".txt")):
                     with open(ofilenamebase+".txt","w") as f:

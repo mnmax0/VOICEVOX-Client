@@ -42,6 +42,7 @@ python3.11 voicevox_client.py -i youtubeyou.txt -v 1.4 2> /dev/null
 * vオプションで、読み上げ速度を1.4倍に
 * デフォルトは http://127.0.0.1:50121のエンジンを利用します（VOICEVOX NEMOエンジン）他のエンジンを使いたい場合は -p で違うポートを指定 ( urlも違うなら-uオプションで）
 * speakerのidはデフォルトは10006です。違うidの音声を利用する場合は-s オプションで指定
+* -s オプションで、話者の名前や、タイプを指定できるようになりました(2024/2/20)
 
 以下はVOICEVOX NEMOではなくて、VOICEVOXを利用する場合で、speaker idが1の時
 ```bash
@@ -124,10 +125,10 @@ options:
   -u URL, --url URL     VoicevoxエンジンのURL
   -p PORT, --port PORT  Voicevoxエンジンのポート
   -s SPEAKERID, --speakerid SPEAKERID
-                        スピーカーのID
+                        スピーカーのID or 話者の名前とタイプ。タイプを省略した場合ノーマルタイプのID ex. 10006, 女性6||ノーマル, 女性6
   -l, --listspeakers    そのエンジンのバージョン、利用可能なspeakers(json形式),ユーザー辞書(json形式)の情報出力
   -o OUTPUT_FILENAME_BASE, --output_filename_base OUTPUT_FILENAME_BASE
-                        出力ファイルの名前の先頭指定（無指定ならOUT)
+                        出力ファイルの名前の先頭指定（無指定でiオプション使ってなければOUT、iオプション使ってるなら入力ファイル名のbaseに_を追加した文字列)
   -w, --enable_output_file
                         ファイル出力するモード
   -x, --disable_playwith
@@ -154,7 +155,7 @@ options:
   --outputStereo        outputStereo ステレオにする？（デフォルトはfalse)
 
 VOICEVOX engineなら docker run --rm -p '127.0.0.1:50021:50021' voicevox/voicevox_engine:cpu-latest VOICEVOX NEMO engineなら docker run --rm --gpus all -p '127.0.0.1:50121:50121'
-voicevox/voicevox_nemo_engine:cpu-ubuntu20.04-latest
+voicevox/voicevox_nemo_engine:cpu-latest
 ```
 
 注) Ubuntu22.04で作業しました。2024/2/12時点で、Python3.10だとpyaudioで音を再生しようとするとエラーになりました。python3.11にあげると、この問題は解消されます。私はvenvでその環境を作って動作させました。音声を再生せずに、wavファイルとして出力するだけなら、Python3.10でも問題ありません。pyaudioのかわりに、mpvとか外部コマンドで再生するようにしたら、ここらの問題は発生しないのですが、なんとなく今の感じにしました。（もともとはwavファイルを出力して、それを外部コマンドで音にしてました）
@@ -196,6 +197,48 @@ script言語||スクリプトゲンゴ||0
 
 tourokuEx.shの引数を渡さない場合、ポートは50121、辞書ファイルは myjisyo.dat が対象になる。
 
+## 簡易言語 
+myparser.py で処理。出力ファイルの再生用が atokaraPlayV2.py
+
+例 tests/youtubeyou20240221.vv という台本ファイルを処理
+```bash
+python3.11 myparser.py -i tests/youtubeyou20240221.vv -w -f
+```
+
+これで、wav, json, txtの３つのファイルが１行毎に作成されます。 (音声ファイル、各種情報が辞書形式ではいってるファイル、読み上げた文字の情報のテキストファイル)
+(jsonファイルを、jsonライブラリでインポートしようとするとエラーになりました。astパッケージを利用すると辞書形式であつかえました。)
+
+例 上記で作成した出力ファイルを再生
+```bash
+python3.11 atokaraPlayV2.py -b youtubeyou20240221 -d tests/  2> /dev/null
+```
+章毎に入力待ちになります。
+
+台本ファイルの例
+```bash
+#c| set _x   話者:女声6 話速:1.4
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _yy  話者:四国めたん タイプ:ノーマル speedScale:1.4 pitchScale:0.0 intonationScale:1.0 volumeScale:1.0 prePhonemeLength:0.1 postPhonemeLength:0.1
+#c| set _z   話者:ずんだもん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _zz  話者:ずんだもん タイプ:ノーマル 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| Cchange  話速:1.4
+前の動画の後、いろいろ改造しました。前はSpeakerのIDで指定してましたが、名前とタイプで指定出来るようにしました。
+#c| newChapter
+また、ファイル出力する先が、作業ディレクトリでしたが、出力先無指定の場合は、元のファイルがあるディレクトリに出力するようにしました。
+#c| newChapter
+あと、簡易言語ファイルを元に音声合成と、合成時の情報をjsonファイルに、また読み上げ文字をtextファイルに出力するようにしました。
+#c| newChapter
+これは、後から再生するときに、背景とか、動画とか、自動入力など、音声ファイルだけではなくて、他と生成した音声を組み合わせて使いやすくするためです。
+この簡易言語ファイルからの合成だと、Speakerの交代がやりやすいので、複数のSpeakerを交互に使う時にはやりやすくなります。
+色々試行錯誤してるあいだに、ソースが汚くなってて恥ずかしいのですが、Githubに最新バージョンを公開してあります。
+今後使いながら、使い方とか文法どんどんかわってしまうかもしれませんが、よろしくお願いいたします。
+以降の動画で変更点とか、簡易言語の説明をしていく予定です。それではまたね！
+
+_x:寿司食いたい！
+_y:他に良いのあるかな？
+_z:中華も良いかも
+```
+
 ## ファイルの説明
 <dl>
   <dt>voicevox_client.py</dt> <dd>プログラム本体</dd>
@@ -204,6 +247,13 @@ tourokuEx.shの引数を渡さない場合、ポートは50121、辞書ファイ
   <dt>tourokuEx.sh</dt> <dd>辞書登録の例</dd>
   <dt>youtubeyou.txt</dt> <dd>テスト用のテキストファイル</dd>
   <dt>atokaraPlay.py</dt> <dd>生成したwav,txtファイルを表示しながら再生するプログラム</dd>
+  <dt>LICENSE</dt> <dd>ライセンス情報</dd>
+  <dt>README.md</dt> <dd>このファイル</dd>
+  <dt>myjisyo.dat</dt> <dd>辞書ファイル</dd>
+  <dt>tourokuEx.sh</dt> <dd>辞書ファイル情報を登録</dd>
+  <dt>myparser.py</dt> <dd>簡易言語のパーサー</dd>
+  <dt>voicevox_grammer.lark</dt> <dd>パーサーの文法ファイル</dd>
+  <dt>atokaraPlayV2.py</dt> <dd>パーサーが出力したファイルの再生用。章毎に入力待ちになる</dd>
   <dt></dt> <dd></dd>
 </dl>
 

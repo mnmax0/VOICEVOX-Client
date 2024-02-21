@@ -1,0 +1,34 @@
+# https://lark-parser.readthedocs.io/en/latest/examples/
+# https://github.com/lark-parser/lark/tree/master/examples
+?start: line+
+
+line	: "//" /[^\n]+/ NL  -> comment
+	| "#e|" command NL -> system
+	| "#e|" WS_INLINE* NL -> comment
+	| "#c|" command NL -> command
+	| speaker ":" data NL -> xreadit
+        | data NL -> readit
+        | (WS_INLINE)* NL -> comment
+
+command : /[^ \t\n]+/ (WS_INLINE+ arg)*
+
+speaker : /_[^ :\t\n]+/ (WS_INLINE arg)*
+
+arg 	: /[^ \t\n]+/
+
+data	: /[^\n]+/
+
+NL: /\n/
+
+# https://github.com/lark-parser/lark/blob/master/lark/grammars/common.lark
+#%import common.LETTER
+#%import common.WORD
+#%import common.WS
+%import unicode.WS
+#%import common.NEWLINE
+#%import common.WS_INLINE
+%import unicode.WS_INLINE
+#%import common.UCASE_LETTER
+#%import common.SIGNED_FLOAT
+#%import common.FLOAT
+%ignore WS

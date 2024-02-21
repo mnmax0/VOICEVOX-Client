@@ -1,2 +1,6 @@
 __pycache__/
 OUT*
+*wav
+*json
+tests/*wav
+tests/*json

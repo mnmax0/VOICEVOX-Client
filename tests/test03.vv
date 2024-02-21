@@ -1,0 +1,24 @@
+#c| setSpeakerWithNameType ずんだもん ノーマル
+// これはコメント
+お腹減ってきたよ！
+#c| setSpeakerWithNameType 四国めたん ノーマル
+お腹減ってきたね！
+#c| setSpeakerWithNameType 女声6 ノーマル
+お腹減ってきたね！
+#c| setSpeakerWithNameType 四国めたん あまあま
+お腹減ってきたね！
+#c| setSpeakerWithNameType 女性1 ノーマル
+お腹減ってきたね！
+#c| setSpeakerWithNameType ずんだもん ヒソヒソ
+お腹減ってきたね！
+#c| setSpeakerWithNameType 四国めたん ヒソヒソ
+お腹減ってきたね！
+#c| newChapter
+// これもコメント
+#c| set _x 話者:四国めたん タイプ:あまあま 話速:1.5 音高:0.25 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+今日何食べよかな？
+_x:寿司食いたい！
+_y:他に良いのあるかな？
+#c| newChapter
+_z:中華も良いかも
+やっぱ鍋かな？
