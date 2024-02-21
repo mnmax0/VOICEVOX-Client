@@ -206,7 +206,7 @@ tourokuEx.shの引数を渡さない場合、ポートは50121、辞書ファイ
 ## 簡易言語 
 myparser.py で処理。出力ファイルの再生用が atokaraPlayV2.py
 
-例 tests/youtubeyou20240221.vv という台本ファイルを処理
+### 例 tests/youtubeyou20240221.vv という台本ファイルを処理
 ```bash
 python3.11 myparser.py -i tests/youtubeyou20240221.vv -w -f
 ```
@@ -245,6 +245,72 @@ _y:他に良いのあるかな？
 _z:中華も良いかも
 ```
 
+### help表示
+```bash
+python3 myparser.py --help
+```
+以下の出力
+```text
+usage: myparser.py [-h] -i INPUT_FILENAME [-o OUTPUT_FILENAME_BASE] [-w] [-f]
+                   [--outputSamplingRate OUTPUTSAMPLINGRATE] [--outputStereo]
+
+VOicevox client: VOICEVOXエンジンを利用して音声合成する簡易言語(先にVOICEVOXエンジンを動かす必要あり)
+
+options:
+  -h, --help            show this help message and exit
+  -i INPUT_FILENAME, --input_filename INPUT_FILENAME
+                        ソースファイル
+  -o OUTPUT_FILENAME_BASE, --output_filename_base OUTPUT_FILENAME_BASE
+                        出力ファイルの名前の先頭指定（無指定でiオプション使ってなければOUT、iオプション使ってるなら入力ファイル
+                        名のbaseに_を追加した文字列)
+  -w, --enable_output_file
+                        ファイル出力するモード
+  -f, --overwritemode   出力ファイルを上書きモード
+  --outputSamplingRate OUTPUTSAMPLINGRATE
+                        outputSamplingRate 出力周波数(デフォルト24000)
+  --outputStereo        outputStereo ステレオにする？（デフォルトはfalse)
+```
+
+## 簡易言語 myparser.pyで生成したファイルで使われてるSpeakerの情報を調べるツール 
+### 使用例 youtubeyou20240221-2.vvという台本ファイルから生成したファイルが /home/youtube/tmp/02にある場合
+```bash
+python3 checkSpeakers.py -d /home/youtube/tmp/02 -b youtubeyou20240221-2
+```
+出力
+```text
+女声6(ノーマル),簡易言語を利用して、前の動画を作りました。その手順を紹介します。
+女声6(ノーマル),まず、台本ファイルを作成しました。 そのファイルがこれです。
+... 省略 ...
+女声6(ノーマル),話がそれましたが、前の動画の作成手順の説明をしました。
+女声6(ノーマル),今後の動画では、簡易言語を使って台本を作る命令を順に説明していこうかと考えてます。それではまたね！
+{'女声6': ''}
+dict_keys(['女声6'])
+「VOICEVOX NEMO」
+```
+
+### help表示
+ヘルプ表示命令
+```bash
+python3 checkSpeakers.py --help
+```
+出力
+```text
+usage: checkSpeakers.py [-h] [-b FILENAME_BASE] [-d TARGET_DIRECTORY]
+                        [-c START_CHAPTER_NUMBER]
+
+myparse.pyで生成したjsonファイルを確認して、使ったSpeakerのリストを表示
+
+options:
+  -h, --help            show this help message and exit
+  -b FILENAME_BASE, --filename_base FILENAME_BASE
+                        ファイルの名前の先頭指定（無指定ならOUT)
+  -d TARGET_DIRECTORY, --target_directory TARGET_DIRECTORY
+                        対象ファイルがあるディレクトリ（無指定なら./)
+  -c START_CHAPTER_NUMBER, --start_chapter_number START_CHAPTER_NUMBER
+                        処理スタートする章
+```
+
+
 ## ファイルの説明
 <dl>
   <dt>voicevox_client.py</dt> <dd>プログラム本体</dd>
@@ -260,6 +326,7 @@ _z:中華も良いかも
   <dt>myparser.py</dt> <dd>簡易言語のパーサー</dd>
   <dt>voicevox_grammer.lark</dt> <dd>パーサーの文法ファイル</dd>
   <dt>atokaraPlayV2.py</dt> <dd>パーサーが出力したファイルの再生用。章毎に入力待ちになる</dd>
+  <dt>checkSpeakers.py</dt> <dd>jsonファイルを調べて、使われてるSpeakerの名前を表示。クレジット用の文字列も生成</dd>
   <dt></dt> <dd></dd>
 </dl>
 

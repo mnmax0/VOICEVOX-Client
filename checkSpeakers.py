@@ -7,10 +7,10 @@ if __name__ == "__main__":
     import voicevox_client
     import ast
     from pprint import pprint
-    parser = argparse.ArgumentParser(description="myparse.pyで生成したwavとtxtファイルを順に再生 章毎に入力待ちに", epilog="")
+    parser = argparse.ArgumentParser(description="myparse.pyで生成したjsonファイルを確認して、使ったSpeakerのリストを表示", epilog="")
     parser.add_argument("-b","--filename_base", default="OUT", help="ファイルの名前の先頭指定（無指定ならOUT)")
     parser.add_argument("-d","--target_directory", default="./", help="対象ファイルがあるディレクトリ（無指定なら./)")
-    parser.add_argument("-c","--start_chapter_number", type=int, default=1, help="対象ファイルがあるディレクトリ（無指定なら./)")
+    parser.add_argument("-c","--start_chapter_number", type=int, default=1, help="処理スタートする章")
     args = parser.parse_args()
     files = os.listdir(args.target_directory)
     files.sort()
@@ -24,21 +24,25 @@ if __name__ == "__main__":
     #print(target)
     #print(wavs)
     #print(txts)
-    pchapter=0
+    #pchapter=0
+    mylist={}
     for i, t in enumerate(jsons):
         tt=args.target_directory+"/"+t
         with open(tt,"r") as f:
             d=ast.literal_eval(f.read())
             cchapter=d["chapter"]
             txt=d["txt"]
-            if cchapter>=args.start_chapter_number:
-                if pchapter!=cchapter:
-                    print("***HitEnter***")
-                    val=input()
-                #print("****************",i)
-                #pprint(d)
-                print(txt)
-                fname=args.target_directory+"/"+os.path.basename(d["ofilenamebase"])+".wav"
-                voicevox_client.playWaveFile(fname)
-            pchapter=cchapter
-
+            name=d["name"]
+            _type=d["type"]
+            mylist[name]=""
+            print("%s(%s),%s" % (name,_type,txt))
+    print(mylist)
+    pprint(mylist.keys())
+    nemoflag=False
+    for i in mylist.keys():
+        if re.match(r'^(女|男)声[0-9]+$',i):
+            nemoflag=True
+        else:
+            print("「VOICEVOX %s」" % i)
+    if nemoflag:
+            print("「VOICEVOX %s」" % "NEMO")
