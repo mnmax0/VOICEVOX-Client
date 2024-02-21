@@ -6,6 +6,12 @@ VOICEVOX engineをPythonから利用して音声合成するツール。
 
 ## ユーザーガイド
 
+### 必要なパッケージ
+pyaudio, lark
+pipを使うなどしてインストールしてください。
+Ubuntu22.04の場合、python3.10だとpyaudioでエラーが発生します。python3.11をインストールして、そちらを使ってください。
+再生せずにファイルに出力だけならpython3.10でもOK
+
 ### 使い方(音声を生成)
 手順としては以下になります。
 1. VOICEVOX engine あるいは VOICEVOX NEMO engineの起動（両方でも片方でもOK)
