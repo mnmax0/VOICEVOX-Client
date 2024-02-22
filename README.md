@@ -334,8 +334,15 @@ options:
 [MIT](https://opensource.org/license/mit/ "MIT")
 
 ## 説明動画
+* 再生リスト https://www.youtube.com/playlist?list=PLAR5qAGp9riaTRKPUpIR3b_o9cWzoN-Wq
 * https://youtu.be/c7LvNuyR3oM
 * https://youtu.be/0yDiLfworwI
+* https://youtu.be/zl3fhRXDbe8
+* https://youtu.be/iFPUaPtS8HY
+* https://youtu.be/BAEtagyduYw
+* https://youtu.be/OyITv7kE0pU
+* https://youtu.be/mD6DHtRmCe8
+* https://youtu.be/2ZgiKuvd1jY
 
 ## 関連サイト
 * 私のYoutubeチャンネル https://www.youtube.com/channel/UCNko_uhYtoTowASAuOam17w
