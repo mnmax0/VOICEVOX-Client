@@ -31,6 +31,7 @@ if __name__ == "__main__":
             d=ast.literal_eval(f.read())
             cchapter=d["chapter"]
             txt=d["txt"]
+            printTxt=d["print"]
             if cchapter>=args.start_chapter_number:
                 if pchapter!=cchapter:
                     print("***HitEnter***")
@@ -40,5 +41,7 @@ if __name__ == "__main__":
                 print(txt)
                 fname=args.target_directory+"/"+os.path.basename(d["ofilenamebase"])+".wav"
                 voicevox_client.playWaveFile(fname)
+                if len(printTxt)>0:
+                    print(printTxt)
             pchapter=cchapter
 
