@@ -40,11 +40,11 @@ if __name__ == "__main__":
                 #print("****************",i)
                 #pprint(d)
                 if len(printTxt)>0:
-                    print(printTxt)
+                    print("_>",printTxt)
                 print(txt)
                 fname=args.target_directory+"/"+os.path.basename(d["ofilenamebase"])+".wav"
                 voicevox_client.playWaveFile(fname)
                 if len(printzTxt)>0:
-                    print(printzTxt)
+                    print(">>",printzTxt)
             pchapter=cchapter
 
