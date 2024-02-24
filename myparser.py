@@ -147,6 +147,7 @@ class MyDirector:
         self.counter=1
         self.chapter=1
         self.print=""
+        self.printz=""
     def write(self,text,sp,spname="self.c_speaker"):
         ofilenamebase="%s_%03d_%05d" % (self.output_filename_base,self.chapter,self.counter)
         #print("****write",ofilenamebase,text,self.enable_output_file,self.overwritemode)
@@ -167,11 +168,12 @@ class MyDirector:
                 sys.exit(1)
             if self.overwritemode or (not os.path.isfile(ofilenamebase+".json")):
                 print("write json")
-                data={"chapter":self.chapter, "counter":self.counter, "txt":text, "spname":spname, "id":sp.getId(), "name":sp.getName(), "type":sp.getType(), "conf":sp.engs[sp.i].conf, "ofilenamebase":ofilenamebase, "xset":self.xconf,"print":self.print}
+                data={"chapter":self.chapter, "counter":self.counter, "txt":text, "spname":spname, "id":sp.getId(), "name":sp.getName(), "type":sp.getType(), "conf":sp.engs[sp.i].conf, "ofilenamebase":ofilenamebase, "xset":self.xconf,"print":self.print,"printz":self.printz}
                 with open(ofilenamebase+".json","w") as f:
                     f.write(str(data))
                 self.xconf=[]
                 self.print=""
+                self.printz=""
             else:
                 print(ofilename+".json が存在していて上書きしません。終了します。上書きするなら-fオプションをつけて再度実行してください")
                 sys.exit(1)
@@ -234,10 +236,14 @@ class MyDirector:
                 print("**newChapter")
                 self.counter=1
                 self.chapter+=1
-            # 新しい章
+            # 再生時に１行表示 (再生前
             elif c == 'print':
                 print("**print")
                 self.print=" ".join(args)
+            # 再生時に１行表示 (再生後
+            elif c == 'printz':
+                print("**printz")
+                self.printz=" ".join(args)
             # 話者情報表示
             elif c == 'list':
                 print("**list")

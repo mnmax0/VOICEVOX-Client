@@ -32,16 +32,19 @@ if __name__ == "__main__":
             cchapter=d["chapter"]
             txt=d["txt"]
             printTxt=d["print"]
+            printzTxt=d["printz"]
             if cchapter>=args.start_chapter_number:
                 if pchapter!=cchapter:
                     print("***HitEnter***")
                     val=input()
                 #print("****************",i)
                 #pprint(d)
+                if len(printTxt)>0:
+                    print(printTxt)
                 print(txt)
                 fname=args.target_directory+"/"+os.path.basename(d["ofilenamebase"])+".wav"
                 voicevox_client.playWaveFile(fname)
-                if len(printTxt)>0:
-                    print(printTxt)
+                if len(printzTxt)>0:
+                    print(printzTxt)
             pchapter=cchapter
 
