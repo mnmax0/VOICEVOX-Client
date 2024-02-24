@@ -1,0 +1,84 @@
+#c| Cchange  話速:1.4
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _z   話者:ずんだもん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+それではラズベリーパイピコの導入サイトの内容をやっていきます。
+#c| newChapter
+#c| print その他情報サイト https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html 
+Getting Startedページわかりやすいページあるので、そこでやっていきます。
+最初のページは、このシリーズをやっていくと、どういうことができるかっていうの書いてます。
+#c| newChapter
+この文書の目指すところをするのに必要なものが書いてますが、外部にLEDを接続するのではなくて、もともと内蔵しているLEDを点滅させる場合は、ここで必要ってなっているものの、かなりの部分が不要となります。
+内蔵してるLED点滅には、ラズパイピコと、開発環境ソフトが動くコンピューターと。接続するUSBケーブルがあれば大丈夫です。
+ミニUSB端子になってて、抜き差ししにくいので、100均一にある、USB-CとミニUSBの変換コネクタを用意した方がやりやすくなります。
+安定しにくいので、ピンをはんだ付けして、ブレッドボードにさしておいた方が、かなりやりやすくなります。
+半田するなら、フラックスも用意した方が良いです。全然難易度がかわるので。私はアマゾンで数百円で購入しました。
+開発環境ソフトはThonny。ブラウザだとトニーとなってますが、ネット検索すると読みがソニーとしてるサイトもあったので、この動画シリーズでは「ソニー」と呼ぶことにします。
+外国語の発音は日本語文字で完全に表現できないので。
+Thonnyのリンク先を開いてみますね。
+#c| newChapter
+この開発環境ソフトは、Windows、Mac、Linux用が用意されてるようです。それぞれ複数のインストールの方法があります。
+インストーラーをダウンロードしてインストールする方法、pipを利用してインストールする方法など色々あります。
+#c| newChapter
+ちなみにUbuntuの安定バージョン 22.04を使って、OSが準備しているThonnyをインストールすると、かなりふるい3.3.14がインストールされました。
+Thonnyの公式サイトで推奨されているのは バージョン4.1.4 でした。ただ、LEDチカチカするのにおいては、どっちでも問題ないと思います。
+pipを使ったインストール方法はどのOSでも可能になってます。まずWindowsみてみましょう
+#c| newChapter
+次にMac
+#c| newChapter
+次にLinux
+#c| newChapter
+インストーラーを使った方法でも良いのですが、この動画ではpipを使った方法でやってみます。どのOSでも可能なので。
+他の方法でも問題ないので、好きな方法でThonnyインストールしてください。
+#c| newChapter
+#c| print python3.11 -m venv pico
+そのままインストールすると環境が汚れるので、venvで仮想環境作って、その中でpipを使ってインストールします。そうすれば環境を汚さないので。
+#c| print source pico/bin/activate
+まずPython3.11で仮想環境を作ります。
+#c| newChapter
+#c| print pip install thonny
+作った仮想環境に入ります。
+#c| newChapter
+Thonnyをインストールします。
+#c| newChapter
+Thonnyを立ち上げます。
+#c| newChapter
+言語を日本語にします。
+#c| newChapter
+バージョンを確認してみましょう。
+#c| newChapter
+現時点で最新の4.1.4になってますね。
+#c| newChapter
+次にpicoちゃんをbootボタン押しながら接続します。
+かわりに、リセットボタンを配線してるので、bootボタン押しながら、リセットボタンを押します。
+#c| newChapter
+ファームウエアをインストールします。色々なバージョンありますが、標準のをいれます。
+#c| newChapter
+これで準備ができました。
+今つないだデバイスを選択します。
+#c| newChapter
+#c| print import machine
+早速LEDをオンオフしてみましょう。
+#c| print led=machine.Pin(25,machine.Pin.OUT)
+まずmachineをimportします。
+#c| newChapter
+#c| print led.on()
+内部LEDは25番ポートにつながってます。
+#c| newChapter
+#c| print led.off()
+LEDをつけます。
+#c| newChapter
+LEDを消します。
+#c| newChapter
+これで、IOの出力を変化させる方法がわかりました。
+#c| print led.toggle()
+出力を反転させる命令もあります。
+#c| newChapter
+タイマー入れて出力を反転させれば、チカチカになります。
+#c| newChapter
+それではそういうプログラム打ち込んで動かしてみます。
+ファイルをmain.pyという名前で、デバイスに書き込めば、次に立ち上がったときに、そのプログラムを実行してくれます。
+それでは、今回はここまでにしたいと思います。
+次回の動画はまだ何にするか決めてません、作れたらすぐにアップしますので、よろしくお願いします。またね！
+
+
