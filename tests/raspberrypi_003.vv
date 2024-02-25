@@ -1,0 +1,67 @@
+#c| Cchange  話速:1.4
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _z   話者:ずんだもん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+前回はPicoちゃんでLEDチカチカしました。今回はPico WちゃんでLEDチカチカしていきます。
+PicoちゃんとPico Wちゃんでは、無線機能があるかどうかで異なります。価格もかなり違っています。私が購入したとき、価格はだいたい倍くらい違いました。
+内蔵LEDがつながっている先が異なっていて、Picoちゃんは25番ポートでしたが、Pico Wちゃんは25番ではありません。
+#c| print 回路図がP.23,24にあり、WLGPI00ライン https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf
+回路図によると、無線モジュールのICとつながってます。回路図がある資料のURLを動画の概要欄に貼っておきます。P.23とP.24に回路図があります。
+P.23のLEDの回路図がこんな感じです。
+#c| newChapter
+P.24の無線モジュール側からLEDに出てる部分がここになります。
+#c| newChapter
+前回の動画ではPicoちゃんにファームウエアを入れましたが、今回はPico Wちゃんに入れていきます。
+Bootボタンを押しながらPCと接続するか、Bootボタンを押しながら、リセットすればOKです。
+今回は,リセットボタンの回路を作ってあるので、ボタン操作で行います。
+#c| newChapter
+入れれる種類が沢山出てきます。今回は標準的なものをいれます。
+インストール終わるまでちょっとお待ちください。
+#c| newChapter
+#c| print from picozero import pico_led   あるいは machineをimportしてから、machine.Pin("LED",machine.Pin.OUT) 
+内蔵LEDの接続先がことなるので、前の動画と違う命令になります。
+それでは、対話環境で手動でLEDチカチカしてみます。
+#c| newChapter
+0.5秒間隔でチカチカするプログラムは、前回のLEDの操作部分だけかえればよいので、こんな感じになります。
+#c| newChapter
+前回のようにmachineをインポートしてLEDをオン、オフできる方法もあるので、そちらもやってみます。
+前回は25としていたところを"LED"とする方法です。
+#c| newChapter
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+ネットワークに接続して、ネット経由でLED操作する例の解説が、Getting Startページで解説されてます。このURLも動画の概要欄にはっておきますね。
+#c| newChapter
+#c| print from picozero import pico_temp_sensor してから、 pico_temp_sensor.temp
+このサイトでLED以外にも、温度センサーの情報も表示させてるので、温度センサーのあたいを得る方法についても、やってみます。
+#c| newChapter
+この数値が温度になります。今、結構寒いです。
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+Pico Wちゃんの導入ページの方法を順にやっていって、うまくネット経由でLED操作を行うことができました。。ローカルのWifiのパスワード等をプログラムに埋め込む必要があるので、今回はそこを隠して、うまくいったソースをざっと紹介します。
+こまかく、このサイトのとおりやると、色々ネットワークの情報が公開されてしまって、セキュリティ上あんまりよくないので、ざっと説明するにとどめたいと思います。
+部分部分で説明されてて、うまく動くプログラム全体はサイトに掲載されてないので、うまく動作した全体のソースみせときますね。
+#c| newChapter
+#c| print ネットワークとパスワードは各自つなぎたい機材にあわせる
+ここを、つなぎたい2.4GHzのWifiのネットワーク名にします。機材にシール貼ってたりします。ルーターにアクセスしても確認できました。機材によると思いますが。
+パスワード名もつなぎたい機材で確認する必要があります。
+#c| newChapter
+Wifi設定の接続先は2.4Gの設定にしてください。それでだめなら、2.4Gのもう一つの設定も試してみてください。私の場合は、2.4Gの１つの設定でしかうまく接続することができませんでした。
+#c| newChapter
+#c| newChapter
+#c| print connect 関数
+この部分が、Wifiに接続する部分になります。今回紹介した導入ページで１ページ分で説明されてます。わかりにくい場合はそちらを確認してみてください。
+#c| newChapter
+#c| print open_socket関数
+この部分がソケット開く部分です。同じく導入サイトでは１ページ分くらいで説明されてます。
+#c| newChapter
+#c| print webpage関数
+この部分がHTMLの中身になります。
+#c| newChapter
+#c| print serve関数
+この部分がサーバーの中身になります。
+#c| newChapter
+動かしたときの様子がこんな感じになります。
+LEDをオンにしたりオフにしたり
+#c| newChapter
+温度も表示されてます。
+#c| newChapter
+今回の動画では、Picoちゃんと、無線機能付きのPico Wちゃんで内蔵LEDの光らせかたが異なるのと、ネット経由でLED操作する例をやりました。あと、温度センサから,あたいのとりかたも。
+次回の動画の予定はまだ決めてないのですが、作成しだいアップしますので、よろしくお願いいたします。それでは、またね！

@@ -1,0 +1,42 @@
+#c| Cchange  話速:1.4
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _z   話者:ずんだもん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+前回はPico WちゃんでLEDチカチカしました。
+今回はPicoの互換機に搭載されてるRGB LEDを七色に光らせるのをやってみます。
+購入したとき、そういうプログラムが予めインストールされていたのですが、Pythonのファームで上書きしてしまって、その後どうしたら七色に変化させれるのかわからなくなってました。
+先程色々調べて、やり方わかったので、動画にします。
+今七色に光らせてます。
+#c| newChapter
+YD-RP2040という互換機を購入したと思ってたのですが、基盤に刻印がないので、互換機の互換機かもしれません。
+RGB LEDは23番ポートに接続されてて、シリアルで命令を送ると、指定された色で発光するようです。
+RGB LEDデバイスはWS2812か、その同等品のようです。
+直列に接続してやると、データを次々送って、多彩な光らせ方ができるデバイスで、機会があれば複数個購入してみたくなりました。
+早速、対話的に、指定の色で光らせるのをやっていきます。
+#c| print import neopixel, machine
+まず必要なモジュールをインポートします。
+#c| newChapter
+#c| print np=neopixel.NeoPixel(machine.Pin(23),1)
+光らせやすくするオブジェクトを生成します。 引数の１つ目は23ピン接続、次の１は１つ接続っていう意味です。
+#c| newChapter
+#c| print np[0]=(255,0,0)
+赤色にまず光らせるために、Rに255、GとBに0にする準備します。Rは赤、Gは緑、Bは青で、255がマックスです。
+#c| newChapter
+#c| print np.write()
+write命令で、データをシリアル送信します。これで色が変化します。
+#c| newChapter
+RGBすべてを0にして、消してみます。
+#c| newChapter
+こんな感じで希望の色で光らせる事ができます。
+三角関数で色を振動させて、RGBそれぞれ90度位相差をもたせて七色に光らせるプログラムを作ったので走らせてみます。
+#c| newChapter
+こんな感じで綺麗ですよね。
+#c| print neopixelモジュールソース https://github.com/micropython/micropython-lib/blob/master/micropython/drivers/led/neopixel/neopixel.py
+#c| printz neopixelモジュールで使われている https://github.com/micropython/micropython/blob/master/extmod/machine_bitstream.c
+つかっているモジュールがどうなっているのか気になったので、ソースのURLを調べました。そのURL動画の概要欄に貼っておきます。
+マシン語を使ったサンプルもあったのですが、調査不足でよくわからなかったので、そちらの内容も理解できたら、また動画にします。
+今回は、互換機に搭載されてるRGB LEDを色々な色で光らせてみました。
+次回の予定はまだ決めてないのですが、色々なセンサーとかモーターを購入してあるので、それをするか、あるいは、Micro Python以外の開発環境もあるので、そちらをするかもしれません。動画を作成しだいアップするので、よろしくお願いいたします。
+それでは、またね！
+
+
