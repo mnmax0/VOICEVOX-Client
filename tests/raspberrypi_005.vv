@@ -1,0 +1,51 @@
+#c| Cchange  話速:1.4
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _z   話者:ずんだもん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+前回はPicoの互換機に標準装備されてるRGB LEDを neopixel ライブラリを利用して好きな色に光らせました。
+今回はrp2モジュールを使って、アセンブラも使ったサンプルソースを改造して、好きな色に光らせてみます。
+この方法を使えるようになれば、用意されてない外部部品も使いやすくなると思うので、がんばってみました。
+#c| print https://github.com/raspberrypi/pico-micropython-examples/blob/master/pio/pio_ws2812.py
+元になるソースのURLがこれです。
+このソースではつながってるポートが22になってます。互換機では23番ポートにつながっているので、そこを修正します。
+#c| newChapter
+つなげてる数も互換機は１つなのですが、ソースでは８個になってます。ここを１個に変更して動かそうとすると、こうなります。
+#c| newChapter
+0で割り算するエーラ発生します。しょうがないので、元の８個で実行すると、こんな残念な感じになります。
+#c| newChapter
+ということで、良くわかんなくて、このソースを改造するのを前はあきらめてました。
+色々やってみて、このソースを改造して好きな色に光らせれるようになったので、それ、やっていきます。
+まず元のソースに戻します。
+#c| newChapter
+#c| print ポートを22 → 23に
+ポートが22になってるので、23にします。
+#c| newChapter
+#c| print NUM_LEDS = 1
+数を1個にします。
+#c| newChapter
+下の方削除します。
+#c| newChapter
+#c| print ar[0]=0*2**16 + 255*2**8 +0 # Red
+データの配列の１個目のデータをこんな感じでつくります。8ピットごとに３色指定するようです。緑、赤、青の順でいけるようです。
+#c| newChapter
+#c| print sm.put(ar,8)
+arという配列に入ってるデータをデバイスに送信する命令を追加します。
+これで実行すると希望してる赤になります。
+#c| newChapter
+#c| print ar[0]=255*2**16+0*2**8+0 # Green
+次は緑にしてみます。赤の行をコメントアウトして、緑のデータにします。
+実行してみましょう。
+#c| newChapter
+#c| print ar[0]=0*2**16+0*2**8+255 # Blue
+次は青にしてみます。緑の行をコメントアウトして、青のデータにします。
+#c| newChapter
+#c| print ar[0]=0
+最後は緑の行をコメントアウトして、消すデータにします。全部０ですね。
+#c| newChapter
+#c| print rp2 --- RP2040 に固有の機能 https://micropython-docs-ja.readthedocs.io/ja/latest/library/rp2.html
+#c| printz RP2 クイックリファレンス https://micropython-docs-ja.readthedocs.io/ja/latest/rp2/quickref.html
+このソースで使われているrp2モジュール関係の文書へのリンクを動画の概要欄にはっておきます。なかなかおもしろい内容なので、Raspberry PI Picoを使うかたはみた方が良さそうです。
+#c| print machineモジュールの文書 https://micropython-docs-ja.readthedocs.io/ja/latest/library/machine.html
+また、machineモジュールの文書もみておいた方が良いように思いました。RTCモジュールとか便利そう。
+今回は前回とは違う方法で、RGB LEDを好きな色で光らせました。次回は、またしても未定です。作ったら動画アップしますので、よろしくお願いいたします。
+それではまたね！

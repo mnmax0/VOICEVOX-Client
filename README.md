@@ -245,6 +245,49 @@ _y:他に良いのあるかな？
 _z:中華も良いかも
 ```
 
+### 簡易言語の文法
+* // で開始する行はコメント扱い (行の途中からはコメント扱いにならない）
+* 命令 #c| で開始する行
+* 定義した話者名 : 読み上げる文書 
+* それ以外 読み上げる文書として処理
+
+デフォルト話者が基本的には読み上げ。最初はNANOの女声6になっていて、命令で変更可能
+デフォルト話者以外で読ませたい時は、setで話者を登録するか、デフォルト話者を setSpeakerWithName setSpeakerWithNameType setSpeakerWithID等で変更
+
+#### Cchange : デフォルト話者の読み上げ速度変更
+例) 
+``` vv
+#c| Cchange  話速:1.4
+``` 
+##### setSpeakerWithName setSpeakerWithNameType setSpeakerWithID デフォルト話者を変更
+例) 
+``` vv
+setSpeakerWithName ずんだもん
+setSpeakerWithNameType 四国めたん ノーマル
+setSpeakerWithID 10006
+``` 
+#### newChapter : 章をあたらしく。atokaraPlayV2.pyで再生するときに、入力待ちになる
+例) 
+``` vv
+#c| newChapter
+```
+#### print : atokaraPlayV2.py で再生するときに、再生前に表示 
+例) 
+``` vv
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+```
+#### printz : atokaraPlayV2.py で再生するときに、再生直後に表示
+例) 
+``` vv
+#c| printz picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+```
+#### set : 話者名設定
+例)
+``` vv
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+```
+
+
 ### help表示
 ```bash
 python3 myparser.py --help

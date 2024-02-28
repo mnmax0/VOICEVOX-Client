@@ -1,0 +1,17 @@
+#c| Cchange  話速:1.4
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _z   話者:ずんだもん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| print picoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-pico
+#c| print machineモジュールの文書 https://micropython-docs-ja.readthedocs.io/ja/latest/library/machine.html
+machineモジュールの文書を前回の動画作るときにみて、RTCが結構おもしろかったので、動画にしてみます。
+#c| print import machine
+machineモジュールをインポートします。
+#c| newChapter
+#c| print t=machine.RTC()
+RTCのオブジェクトを作ります。
+#c| newChapter
+#c| print t.datetime()
+現在の日時をゲットしてみます。
+#c| newChapter
+こんな感じで、色々する時に便利に使えそう。
+それでは、またね！
