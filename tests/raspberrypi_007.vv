@@ -1,0 +1,30 @@
+#c| Cchange  話速:1.4
+#c| set _y   話者:四国めたん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| set _z   話者:ずんだもん タイプ:あまあま 話速:1.4 音高:0.0 抑揚:1.0 音量:1.0 開始無音:0.1 終了無音:0.1
+#c| print PicoちゃんMicroPython入門サイト https://projects.raspberrypi.org/en/projects/getting-started-with-the-Pico
+#c| print machineモジュールの文書 https://micropython-docs-ja.readthedocs.io/ja/latest/library/machine.html
+DHT11という有名な温度、湿度センサーモジュールを使ってみました。
+回路図はこのようにしました。
+#c| newChapter
+Picoちゃんの36番ピン(3.3V出力)をモジュールのVCCに接続
+#c| newChapter
+Picoちゃんの18番ピン(GND)をモジュールのGNDに接続
+#c| newChapter
+Picoちゃんの29番ピン(GP22)をモジュールのDATAに接続
+#c| newChapter
+DHT11用のモジュールがすでに用意されてるので、それを使うと非常に簡単でした。
+#c| print import dht, machine
+dhtモジュールとmachineモジュールをインポートします。
+#c| newChapter
+#c| print d=dht.DHT11(machine.Pin(22))
+22番目のピンにデータ接続してるという命令を入れて
+#c| newChapter
+#c| print d.measure()
+測定命令をしてやると
+#c| newChapter
+#c| print print(d.temperature(),d.humidity())
+こういう感じで温度、湿度をゲットできました。
+#c| newChapter
+今回は温度、湿度センサーモジュールをPico Wちゃんで使ってみました。PicoとかPico互換機でも同じ感じで扱えます。
+次回は、ネットごしにこれらのデータをゲットするのをやってみます。Pico Wちゃんの入門サイトの遠隔からLED操作するソースをちょこっと改造すればできそうです。まだやってないんだけど。
+それでは、またね！
